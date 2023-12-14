@@ -35,12 +35,19 @@ public partial class EditContactPage : ContentPage
    
     private  async void SaveButton_Clicked(object sender, EventArgs e)
     {
+        string name = NameEntry.Text;
+        string email = EmailEntry.Text;
 
-        contactInfo.Name = NameEntry.Text;
-        contactInfo.Phone = PhoneEntry.Text;
+        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email))
+        {
+            await DisplayAlert("Dikkat!", "Ad ve E-Posta kısmı boş olamaz.", "OK");
+            return;
+        }
+        contactInfo.Name = name;
+        contactInfo.Phone = PhoneEntry.Text; 
         contactInfo.Address = AdressEntry.Text;
-        contactInfo.Email = EmailEntry.Text;
-       
+        contactInfo.Email = email;
+
         await contactRepository.Update(contactInfo);
         await Shell.Current.GoToAsync("..");
 

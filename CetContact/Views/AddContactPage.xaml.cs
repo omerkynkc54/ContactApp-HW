@@ -22,13 +22,23 @@ public partial class AddContactPage : ContentPage
 
     private async void SaveButton_Clicked(object sender, EventArgs e)
     {
+        string name = NameEntry.Text;
+        string email = EmailEntry.Text;
+        string phone = PhoneEntry.Text;
+        string address = AdressEntry.Text;
+
+        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email))
+        {
+            await DisplayAlert("Dikkat!", "Ad ve E-Posta kýsmý boþ olamaz.", "OK");
+            return;
+        }
 
         ContactInfo contact = new ContactInfo
         {
-            Name = NameEntry.Text,
-            Phone = PhoneEntry.Text,
-            Address = AdressEntry.Text,
-            Email = EmailEntry.Text,
+            Name = name,
+            Phone = phone,
+            Address = address,
+            Email = email
         };
         await contactRepository.AddContact(contact);
         await Shell.Current.GoToAsync("..");

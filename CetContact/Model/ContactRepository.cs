@@ -29,6 +29,10 @@ namespace CetContact.Model
             await database.InsertAsync(contact);
         
         }
+        public async Task DeleteContact(int id)
+        {
+            await database.DeleteAsync<ContactInfo>(id);
+        }
 
         public async Task<ContactInfo> GetContactById(int Id)
         {

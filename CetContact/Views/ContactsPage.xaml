@@ -4,17 +4,20 @@
              x:Class="CetContact.Views.ContactsPage"
              Title="Benim Kişilerim">
     <VerticalStackLayout>
+        <SearchBar Placeholder="Rehberde Ara" TextChanged="OnSearchBarTextChanged"/>
         <ListView x:Name="ContactsList" RowHeight="50" 
-                  SeparatorColor="Silver" SeparatorVisibility="Default" ItemSelected="ContactsList_ItemSelected">
+          SeparatorColor="Silver" SeparatorVisibility="Default" 
+          ItemSelected="ContactsList_ItemSelected">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell
-                         TextColor="Black"
-                       Text="{Binding Name}"
-                        Detail="{Binding Email}"
-                        DetailColor="Blue"></TextCell>  
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" Spacing="10" Padding="20,0,0,0">
+                            <Label Text="{Binding Name}" VerticalOptions="Center" />
+                            <Label Text="{Binding Email}" VerticalOptions="Center" />
+                            <Button Text="Sil" VerticalOptions="Center" Clicked="OnDeleteContactClicked"/>
+                        </StackLayout>
+                    </ViewCell>
                 </DataTemplate>
-                
             </ListView.ItemTemplate>
         </ListView>
         <Button Text="Kişi Ekle" x:Name="AddContactButton" Clicked="AddContactButton_Clicked"></Button>

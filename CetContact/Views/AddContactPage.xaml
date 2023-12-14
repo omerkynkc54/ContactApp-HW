@@ -20,7 +20,7 @@
         </Frame>
         <Frame BorderColor="Silver" Padding="10,2,10,2" >
             <HorizontalStackLayout>
-                <Label Text="EPosta" VerticalOptions="Center" WidthRequest="100"></Label>
+                <Label Text="E-Posta" VerticalOptions="Center" WidthRequest="100"></Label>
                 <Entry x:Name="EmailEntry" VerticalOptions="Center" WidthRequest="200"></Entry>
             </HorizontalStackLayout>
         </Frame>

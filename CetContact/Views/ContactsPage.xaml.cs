@@ -5,35 +5,18 @@ namespace CetContact.Views;
 public partial class ContactsPage : ContentPage
 {
     ContactRepository contactRepository;
-	public ContactsPage()
+    List<ContactInfo> allContacts;
+    public ContactsPage()
 	{
 		InitializeComponent();
-		//List<string> contacts2 = new List<string> {"Hüseyin Şimşek", "Ufuk Adanır" ,"Selim Tetik" , "Talha Zengin"};
-
-		//List<ContactInfo> contacts = new List<ContactInfo>() { 
-		//	new ContactInfo {
-		//              Id=1,
-		//		Name = "Hüseyin Şimşek", 
-		//		Email="huseyin.simsek@boun.edu.tr",
-		//		Phone="905333003030",
-		//		Address=""
-		//		},
-		//          new ContactInfo {
-		//              Id=2,
-		//              Name = "Ufuk Adanır",
-		//              Email="ufuk.adanir@gmail.com",
-		//              Phone="905333004040",
-		//              Address=""
-		//              }
-		//      };
 		contactRepository = new ContactRepository();
 		
 	}
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        var contacts =await contactRepository.GetAllContacts();
-        ContactsList.ItemsSource = contacts;
+        allContacts = await contactRepository.GetAllContacts();
+        ContactsList.ItemsSource = allContacts;
 
     }
     private void AddContactButton_Clicked(object sender, EventArgs e)
@@ -41,6 +24,23 @@ public partial class ContactsPage : ContentPage
 		Shell.Current.GoToAsync(nameof(AddContactPage));
        
     }
+    private async void OnDeleteContactClicked(object sender, EventArgs e)
+    {
+        var button = sender as Button;
+        var contact = button?.BindingContext as ContactInfo;
+
+        if (contact != null)
+        {
+            var answer = await DisplayAlert("Emin misiniz?", $"{contact.Name} kişisini silmek istediğinize emin misiniz?", "Evet", "Hayır");
+            if (answer)
+            {
+                await contactRepository.DeleteContact(contact.Id);
+                // Refresh contacts list
+                ContactsList.ItemsSource = await contactRepository.GetAllContacts();
+            }
+        }
+    }
+
 
     private void ContactsList_ItemSelected(object sender, SelectedItemChangedEventArgs e)
     {
@@ -50,7 +50,6 @@ public partial class ContactsPage : ContentPage
 			ContactInfo selectedContact= ContactsList.SelectedItem as ContactInfo;
             int selectedID= selectedContact.Id; 
 
-           // DisplayAlert("You Clicked", $"//{nameof(EditContactPage)}?id={selectedID}", "ok");
             Shell.Current.GoToAsync($"{nameof(EditContactPage)}?id={selectedID}"); //EditContactPage?id=2
 
             ContactsList.SelectedItem = null;
@@ -58,6 +57,22 @@ public partial class ContactsPage : ContentPage
 
         }
     }
+    private void OnSearchBarTextChanged(object sender, TextChangedEventArgs e)
+    {
+        var searchText = e.NewTextValue ?? string.Empty;
 
-   
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            ContactsList.ItemsSource = allContacts;
+        }
+        else
+        {
+            ContactsList.ItemsSource = allContacts
+                .Where(c => (c.Name?.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                            (c.Email?.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0))
+                .ToList();
+        }
+    }
+
+
 }
